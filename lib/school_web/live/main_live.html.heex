@@ -1,0 +1,47 @@
+<header class="top-bar">
+  <div class="bureau-title">
+    <div class="bureau-icon">✉</div>
+    <div>
+      <div class="bureau-name">Mail Verification Bureau</div>
+      <div class="bureau-subtitle">Postal Inspector Training Division</div>
+    </div>
+  </div>
+</header>
+
+<main class="game-layout">
+  <!-- COLUMN 1: CARD -->
+  <%= if @local_player && @game_state == :in_progress do %>
+    <section class="inspection-area">
+      <%= if @local_player.boss? do %>
+        <.match_time_remaining />
+
+        <.boss_control_panel is_boss={true} />
+      <% else %>
+        <.score_banner
+          player_name={@local_player.name}
+          score={@score}
+          win_bonus_multiplier={@local_player.win_bonus_multiplier}
+        />
+
+        <.match_time_remaining />
+
+        <.package_inspection_form
+          package={@package}
+          timestamp={@timestamp}
+          validation_result={@validation_result}
+          show_player_bonus_action={true}
+        />
+      <% end %>
+    </section>
+  <% else %>
+    <.ready_section local_player={@local_player} />
+  <% end %>
+  
+<!-- COLUMN 2: RULES -->
+  <.postal_regulations rule_descriptions={@rule_descriptions} reversed_rules={@reversed_rules} />
+  
+<!-- COLUMN 3: LEADERBOARD -->
+  <.leaderboard player_list={@player_list} boss_name={@boss_name} />
+</main>
+
+<.match_end_overlay :if={@game_state == :ended} player_list={@player_list} />
